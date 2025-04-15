@@ -4,113 +4,170 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Roshan Tigga | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
   <style>
-    body, html {
+    :root {
+      --primary: #00ff99;
+      --bg: #0a0a0a;
+      --text: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
     }
-    #hero {
-      height: 100vh;
-      width: 100vw;
-      position: relative;
+
+    body {
+      font-family: 'Fira Code', monospace;
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
     }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .content {
-      position: absolute;
-      z-index: 10;
-      color: white;
-      text-align: center;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
+
     nav {
+      width: 100%;
+      background: #111;
+      padding: 1em 2em;
+      display: flex;
+      justify-content: center;
       position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
+      z-index: 1000;
+      top: 0;
     }
+
     nav a {
-      margin: 0 15px;
-      color: white;
+      margin: 0 1em;
+      color: var(--primary);
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
     }
+
+    nav a:hover {
+      color: #fff;
+    }
+
     section {
-      padding: 60px 20px;
-      color: #333;
+      min-height: 100vh;
+      padding: 100px 20px 40px;
     }
-    #about, #projects, #contact {
-      background: #f4f4f4;
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      color: var(--primary);
+    }
+
+    .hero p {
+      font-size: 1.2em;
+      opacity: 0.8;
+    }
+
+    .projects ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .projects li {
+      background: #111;
+      padding: 1em;
+      margin: 1em 0;
+      border-left: 5px solid var(--primary);
+      transition: transform 0.3s;
+    }
+
+    .projects li:hover {
+      transform: translateX(10px);
+    }
+
+    .contact a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
     }
   </style>
 </head>
 <body>
-  <div id="hero">
-    <nav>
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="content">
-      <h1>Hello, I'm Roshan Tigga</h1>
-      <p>Engineer | Developer | Dreamer</p>
-    </div>
-    <canvas id="bg"></canvas>
-  </div>
+  <canvas id="bg"></canvas>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section class="hero" id="home">
+    <h1>Roshan Tigga</h1>
+    <p>Engineer | Developer | Dreamer</p>
+  </section>
 
   <section id="about">
     <h2>About Me</h2>
-    <p>I’m passionate about creating engaging tech solutions, including games, real-time systems, and fun animations.</p>
+    <p>I build modern and interactive tech solutions—from animation tools to real-time systems. Always curious and constantly creating.</p>
   </section>
 
-  <section id="projects">
+  <section id="projects" class="projects">
     <h2>Projects</h2>
     <ul>
-      <li>🎮 Game Recommendation System using Python</li>
-      <li>🚦 Highway Accident Detection System</li>
-      <li>✋ Real-Time Sign Language Detection App</li>
+      <li><strong>🎮 Game Recommendation System</strong> – Python, Decision Trees</li>
+      <li><strong>🚦 Accident Detection & Emergency Alert</strong> – Python, GPS API</li>
+      <li><strong>✋ Sign Language Detection</strong> – OpenCV, Real-Time GUI</li>
     </ul>
   </section>
 
-  <section id="contact">
+  <section id="contact" class="contact">
     <h2>Contact</h2>
-    <p>Email: roshan@example.com</p>
-    <p>LinkedIn: linkedin.com/in/roshantigga</p>
+    <p>Email: <a href="mailto:roshan@example.com">roshan@example.com</a></p>
+    <p>LinkedIn: <a href="https://linkedin.com/in/roshantigga">linkedin.com/in/roshantigga</a></p>
   </section>
 
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg'), alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
 
-    const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-    const material = new THREE.MeshStandardMaterial({ color: 0xff6347 });
-    const torus = new THREE.Mesh(geometry, material);
-    scene.add(torus);
+    const starsGeometry = new THREE.BufferGeometry();
+    const starCount = 1000;
+    const positions = new Float32Array(starCount * 3);
 
-    const pointLight = new THREE.PointLight(0xffffff);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
+    for (let i = 0; i < starCount * 3; i++) {
+      positions[i] = (Math.random() - 0.5) * 200;
+    }
 
-    camera.position.z = 30;
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const starsMaterial = new THREE.PointsMaterial({ color: 0x00ff99, size: 0.7 });
+    const stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
+
+    const light = new THREE.PointLight(0xffffff);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    camera.position.z = 50;
 
     function animate() {
       requestAnimationFrame(animate);
-      torus.rotation.x += 0.01;
-      torus.rotation.y += 0.005;
-      torus.rotation.z += 0.01;
+
+      stars.rotation.x += 0.0005;
+      stars.rotation.y += 0.001;
+
       renderer.render(scene, camera);
     }
 
@@ -120,6 +177,14 @@
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Move stars subtly based on mouse movement
+    document.addEventListener('mousemove', (event) => {
+      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      stars.rotation.x = mouseY * 0.1;
+      stars.rotation.y = mouseX * 0.1;
     });
   </script>
 </body>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,17 +24,29 @@
       background-color: var(--bg);
       color: var(--text);
       overflow-x: hidden;
+      background: url('assets/background.gif') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: -1;
     }
 
     nav {
       width: 100%;
-      background: #111;
+      background: rgba(0, 0, 0, 0.8);
       padding: 1em 2em;
       display: flex;
       justify-content: center;
       position: fixed;
       z-index: 1000;
       top: 0;
+      backdrop-filter: blur(6px);
     }
 
     nav a {
@@ -51,6 +64,7 @@
     section {
       min-height: 100vh;
       padding: 100px 20px 40px;
+      scroll-behavior: smooth;
     }
 
     .hero {
@@ -59,29 +73,18 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      background: url('background.gif') no-repeat center center/cover;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 10, 10, 0.6);
-      z-index: -1;
     }
 
     .hero h1 {
       font-size: 3em;
       margin-bottom: 0.2em;
       color: var(--primary);
+      text-shadow: 0 0 15px #00ff99;
     }
 
     .hero p {
       font-size: 1.2em;
-      opacity: 0.8;
+      opacity: 0.85;
     }
 
     .projects ul {
@@ -90,11 +93,12 @@
     }
 
     .projects li {
-      background: #111;
+      background: rgba(17, 17, 17, 0.9);
       padding: 1em;
       margin: 1em 0;
       border-left: 5px solid var(--primary);
       transition: transform 0.3s;
+      backdrop-filter: blur(4px);
     }
 
     .projects li:hover {
@@ -105,40 +109,9 @@
       color: var(--primary);
       text-decoration: none;
     }
-
-    .floating-gif {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 150px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 153, 0.7);
-      opacity: 0.9;
-      z-index: 1000;
-      animation: float 4s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-10px);
-      }
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
   </style>
 </head>
 <body>
-  <canvas id="bg"></canvas>
-  <img src="background.gif" alt="Decorative GIF" class="floating-gif">
   <nav>
     <a href="#about">About</a>
     <a href="#projects">Projects</a>
@@ -169,54 +142,5 @@
     <p>Email: <a href="mailto:roshan@example.com">roshan@example.com</a></p>
     <p>LinkedIn: <a href="https://linkedin.com/in/roshantigga">linkedin.com/in/roshantigga</a></p>
   </section>
-
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg'), alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    const starsGeometry = new THREE.BufferGeometry();
-    const starCount = 1000;
-    const positions = new Float32Array(starCount * 3);
-
-    for (let i = 0; i < starCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 200;
-    }
-
-    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const starsMaterial = new THREE.PointsMaterial({ color: 0x00ff99, size: 0.7 });
-    const stars = new THREE.Points(starsGeometry, starsMaterial);
-    scene.add(stars);
-
-    const light = new THREE.PointLight(0xffffff);
-    light.position.set(5, 5, 5);
-    scene.add(light);
-
-    camera.position.z = 50;
-
-    function animate() {
-      requestAnimationFrame(animate);
-      stars.rotation.x += 0.0005;
-      stars.rotation.y += 0.001;
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    document.addEventListener('mousemove', (event) => {
-      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-      stars.rotation.x = mouseY * 0.1;
-      stars.rotation.y = mouseX * 0.1;
-    });
-  </script>
 </body>
 </html>
